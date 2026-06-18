@@ -1,0 +1,18 @@
+{
+  "$schema": "https://schema.tauri.app/config/2/capability",
+  "identifier": "default",
+  "description": "Hehel Zip default capabilities",
+  "windows": ["main", "hehel-*"],
+  "permissions": [
+    "core:default",
+    "core:window:allow-create",
+    "core:window:allow-center",
+    "core:window:allow-set-focus",
+    "core:window:allow-close",
+    "core:window:allow-destroy",
+    "core:window:allow-get-all-windows",
+    "dialog:default",
+    "fs:default",
+    "shell:default"
+  ]
+}
