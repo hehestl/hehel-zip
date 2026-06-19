@@ -15,6 +15,7 @@ import { consumeDetachPayload } from "./lib/detachPanel";
 import { useI18n } from "./i18n";
 import { defaultHeheNameFromPaths } from "./lib/createHeheSources";
 import { readCompressionPreset } from "./lib/compressionPrefs";
+import { readConvertImagesToWebp } from "./lib/createHehePrefs";
 import { isModifiedKey } from "./lib/keyboardShortcut";
 import type { AreaNode, CreateHeheResult, SyncConfig } from "./types";
 
@@ -118,6 +119,7 @@ export default function App() {
             dest,
             filesToArchive,
             readCompressionPreset(),
+            readConvertImagesToWebp(),
           );
           setDropHeheResult(result);
         } finally {

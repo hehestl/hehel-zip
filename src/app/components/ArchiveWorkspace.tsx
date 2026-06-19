@@ -48,6 +48,10 @@ import {
   writeExtractCacheDir,
 } from "../lib/extractCachePrefs";
 import {
+  readConvertImagesToWebp,
+  writeConvertImagesToWebp,
+} from "../lib/createHehePrefs";
+import {
   readCompressionPreset,
   writeCompressionPreset,
   type CompressionPreset,
@@ -104,6 +108,7 @@ export function ArchiveWorkspace({
   const [stlOnly, setStlOnly] = useState(readStlOnlyPreference);
   const [extractCacheDir, setExtractCacheDir] = useState(readExtractCacheDir);
   const [compressionPreset, setCompressionPreset] = useState(readCompressionPreset);
+  const [convertImagesToWebp, setConvertImagesToWebp] = useState(readConvertImagesToWebp);
   const [preservePaths] = useState(true);
   const [overwrite] = useState("ask");
   const [contextMenu, setContextMenu] = useState<ContextMenuState | null>(null);
@@ -499,6 +504,11 @@ export function ArchiveWorkspace({
             onCompressionPresetChange={(preset: CompressionPreset) => {
               writeCompressionPreset(preset);
               setCompressionPreset(preset);
+            }}
+            convertImagesToWebp={convertImagesToWebp}
+            onConvertImagesToWebpChange={(value) => {
+              writeConvertImagesToWebp(value);
+              setConvertImagesToWebp(value);
             }}
             extractCacheDir={extractCacheDir}
             onExtractCacheDirChange={(path) => {

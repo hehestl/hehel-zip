@@ -18,6 +18,8 @@ export interface ArchiveWorkspaceChromeProps {
   stlOnly: boolean;
   compressionPreset: CompressionPreset;
   onCompressionPresetChange: (preset: CompressionPreset) => void;
+  convertImagesToWebp: boolean;
+  onConvertImagesToWebpChange: (value: boolean) => void;
   extractCacheDir: string | null;
   onStlOnlyChange: (value: boolean) => void;
   onExtractCacheDirChange: (path: string | null) => void;

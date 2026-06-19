@@ -4,6 +4,7 @@ import { useI18n } from "../i18n";
 import { pickFolderForHehe, pickSaveHehe } from "../components/ArchiveFileTable";
 import type { ResolvedCreateSource } from "../lib/createHeheSources";
 import { readCompressionPreset } from "../lib/compressionPrefs";
+import { readConvertImagesToWebp } from "../lib/createHehePrefs";
 import type { CreateHeheResult } from "../types";
 
 export function useCreateHehe() {
@@ -19,8 +20,9 @@ export function useCreateHehe() {
       setCreating(true);
       try {
         const preset = readCompressionPreset();
+        const convertWebp = readConvertImagesToWebp();
         if (source.kind === "local") {
-          return await api.createArchive(dest, source.paths, preset);
+          return await api.createArchive(dest, source.paths, preset, convertWebp);
         }
         return await api.createHeheFromArchive(
           source.archivePath,
@@ -28,6 +30,7 @@ export function useCreateHehe() {
           source.stripPrefix,
           dest,
           preset,
+          convertWebp,
         );
       } finally {
         setCreating(false);

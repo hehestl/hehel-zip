@@ -14,6 +14,8 @@ interface Props {
   onStlOnlyChange: (value: boolean) => void;
   compressionPreset: CompressionPreset;
   onCompressionPresetChange: (preset: CompressionPreset) => void;
+  convertImagesToWebp: boolean;
+  onConvertImagesToWebpChange: (value: boolean) => void;
   extractCacheDir: string | null;
   onExtractCacheDirChange: (path: string | null) => void;
   onOpenArchive: () => void;
@@ -46,6 +48,8 @@ export function ArchiveMenuBar({
   onStlOnlyChange,
   compressionPreset,
   onCompressionPresetChange,
+  convertImagesToWebp,
+  onConvertImagesToWebpChange,
   extractCacheDir,
   onExtractCacheDirChange,
   onOpenArchive,
@@ -136,6 +140,12 @@ export function ArchiveMenuBar({
       label: t("menu.compressionUltra"),
       checked: compressionPreset === "ultra",
       onClick: () => onCompressionPresetChange("ultra"),
+    },
+    {
+      id: "convert-webp",
+      label: t("menu.convertImagesWebp"),
+      checked: convertImagesToWebp,
+      onClick: () => onConvertImagesToWebpChange(!convertImagesToWebp),
     },
     {
       id: "auto-preview",

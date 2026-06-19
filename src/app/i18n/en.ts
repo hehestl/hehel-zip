@@ -18,6 +18,7 @@ export const en: TranslationTree = {
     compressionFast: "Compression: fast (zstd:3)",
     compressionBalanced: "Compression: balanced (zstd:12, STL)",
     compressionUltra: "Compression: ultra (zstd:19, dict 128M)",
+    convertImagesWebp: "PNG/JPG → lossless WebP when creating .hehe",
     autoPreviewSoon: "Auto-refresh previews (soon)",
     themeSoon: "Theme (soon)",
     language: "Language",

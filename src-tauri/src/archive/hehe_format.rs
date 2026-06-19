@@ -1194,7 +1194,12 @@ mod tests {
             .collect();
         items.push(("target.stl".to_string(), b"solid target".to_vec()));
         items.push((METADATA_PATH.to_string(), b"ArchiveId: x\n".to_vec()));
-        HeheFormat::write_archive(&dir.path().join("big.hehe").to_string_lossy(), &items, METHOD_ZSTD)
+        HeheFormat::write_archive(
+            &dir.path().join("big.hehe").to_string_lossy(),
+            &items,
+            METHOD_ZSTD,
+            HeheCompression::balanced(),
+        )
             .unwrap();
         let dest = dir.path().join("out");
         let start = Instant::now();
@@ -1270,8 +1275,19 @@ mod tests {
         let out_store = dir.path().join("store.hehe");
         let out_deflate = dir.path().join("deflate.hehe");
         let items = vec![("hello.txt".to_string(), b"hello".to_vec())];
-        HeheFormat::write_archive(&out_store.to_string_lossy(), &items, METHOD_STORE).unwrap();
-        HeheFormat::write_archive(&out_deflate.to_string_lossy(), &items, METHOD_DEFLATE).unwrap();
+        HeheFormat::write_archive(
+            &out_store.to_string_lossy(),
+            &items,
+            METHOD_STORE,
+            HeheCompression::balanced(),
+        )
+        .unwrap();
+        HeheFormat::write_archive(
+            &out_deflate.to_string_lossy(),
+            &items,
+            METHOD_DEFLATE,
+            HeheCompression::balanced(),
+        ).unwrap();
         for path in [&out_store, &out_deflate] {
             let bytes = HeheFormat::read_entry_bytes(&path.to_string_lossy(), "hello.txt").unwrap();
             assert_eq!(bytes, b"hello");
@@ -1287,7 +1303,13 @@ mod tests {
             ("empty.bin".to_string(), vec![]),
             ("nested/deep/file.bin".to_string(), big.clone()),
         ];
-        HeheFormat::write_archive(&out.to_string_lossy(), &items, METHOD_ZSTD).unwrap();
+        HeheFormat::write_archive(
+            &out.to_string_lossy(),
+            &items,
+            METHOD_ZSTD,
+            HeheCompression::balanced(),
+        )
+        .unwrap();
         let got =
             HeheFormat::read_entry_bytes(&out.to_string_lossy(), "nested/deep/file.bin").unwrap();
         assert_eq!(got.len(), big.len());
@@ -1384,6 +1406,7 @@ mod tests {
             Some("\u{FEFF}Tags: saved\nName: test\n"),
             "550e8400-e29b-41d4-a716-446655440000",
             &[],
+            "zstd:12",
         );
         assert!(merged.contains("Tags: saved"));
         assert!(merged.contains("Name: test"));
@@ -1417,6 +1440,7 @@ mod tests {
         HeheFormat::create(
             &source.to_string_lossy(),
             &[src_dir.to_string_lossy().into_owned()],
+            HeheCreateOptions::from_api(None, None),
         )
         .unwrap();
         let out = dir.path().join("repack.hehe");
@@ -1425,6 +1449,7 @@ mod tests {
             &["sub/".to_string()],
             Some("sub"),
             &out.to_string_lossy(),
+            HeheCreateOptions::from_api(None, None),
         )
         .unwrap();
         assert!(
@@ -1434,6 +1459,34 @@ mod tests {
         );
         let list = HeheFormat::list(&out.to_string_lossy()).unwrap();
         assert!(!list.iter().any(|e| e.path == "a.stl"));
+    }
+
+    #[test]
+    fn create_converts_png_to_webp_when_enabled() {
+        use image::{ImageBuffer, Rgb, RgbImage};
+        use std::io::Cursor;
+        let dir = TempDir::new().unwrap();
+        let root = dir.path().join("pack");
+        fs::create_dir_all(&root).unwrap();
+        let mut img: RgbImage = ImageBuffer::new(48, 48);
+        for p in img.pixels_mut() {
+            *p = Rgb([40, 120, 200]);
+        }
+        let png_path = root.join("ref.png");
+        let mut png_buf = Vec::new();
+        img.write_to(&mut Cursor::new(&mut png_buf), image::ImageFormat::Png)
+            .unwrap();
+        fs::write(&png_path, &png_buf).unwrap();
+        let out = dir.path().join("webp.hehe");
+        HeheFormat::create(
+            &out.to_string_lossy(),
+            &[root.to_string_lossy().into_owned()],
+            HeheCreateOptions::from_api(None, Some(true)),
+        )
+        .unwrap();
+        let list = HeheFormat::list(&out.to_string_lossy()).unwrap();
+        assert!(list.iter().any(|e| e.path == "ref.webp"));
+        assert!(!list.iter().any(|e| e.path == "ref.png"));
     }
 
     #[test]

@@ -1,5 +1,6 @@
 use crate::error::{AppError, AppResult};
-use image::ImageReader;
+use image::codecs::webp::WebPEncoder;
+use image::{ExtendedColorType, ImageReader};
 use std::collections::HashMap;
 use std::io::Cursor;
 use std::path::Path;
@@ -35,8 +36,11 @@ pub fn encode_webp_full(bytes: &[u8]) -> AppResult<Vec<u8>> {
     let img = reader
         .decode()
         .map_err(|e| AppError::Archive(e.to_string()))?;
+    let rgba = img.to_rgba8();
+    let (width, height) = rgba.dimensions();
     let mut out = Vec::new();
-    img.write_to(&mut Cursor::new(&mut out), image::ImageFormat::WebP)
+    WebPEncoder::new_lossless(&mut out)
+        .encode(rgba.as_raw(), width, height, ExtendedColorType::Rgba8)
         .map_err(|e| AppError::Archive(e.to_string()))?;
     Ok(out)
 }
@@ -82,7 +86,7 @@ pub fn apply_webp_conversion(
 #[cfg(test)]
 mod tests {
     use super::*;
-    use image::{ImageBuffer, Rgb};
+    use image::{ImageBuffer, Rgb, RgbImage};
 
     #[test]
     fn webp_path_replaces_extension() {
@@ -92,7 +96,7 @@ mod tests {
 
     #[test]
     fn converts_png_when_smaller() {
-        let mut img = ImageBuffer::new(64, 64);
+        let mut img: RgbImage = ImageBuffer::new(64, 64);
         for p in img.pixels_mut() {
             *p = Rgb([120, 40, 200]);
         }

@@ -8,6 +8,7 @@
 
 - Парсер `metadata.hehestl` v2: двуязычные поля `|`, O/S с размерами, inline-ссылки `Слово (url)`; UI масштабов и кликабельных ссылок без сырого URL
 - Пресеты сжатия `.hehe`: Fast / Balanced / Ultra (zstd:3 / :12 / :19+w27); STL/OBJ сжимаются при выгоде; `docs/compression.md`
+- Опция «JPG/PNG → WebP (lossless)» при создании `.hehe` — без потери качества; замена только если WebP меньше оригинала
 
 - `ArchiveBackend` trait, `ArchiveService`, registry probe (magic + extension)
 - Zip Slip guard (`path_safety.rs`, camino, Windows reserved names)

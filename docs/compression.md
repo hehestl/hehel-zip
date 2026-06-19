@@ -10,6 +10,8 @@
 | **Баланс** (по умолчанию) | 12 | default | zstd, если меньше store |
 | **Ultra** | 19 | 128 MB (`w27`) | zstd, если меньше store |
 
+**JPG/PNG → WebP (lossless)** (отдельный чекбокс в Настройках): при создании `.hehe` растровые `jpg`/`jpeg`/`png` конвертируются в **lossless WebP** (VP8L) — пиксели без потерь. Замена `photo.png` → `photo.webp` только если WebP **меньше** оригинала. JPEG обычно остаётся как есть (lossless WebP от растра почти всегда больше). Галерея Hehel открывает WebP нативно.
+
 Метка в `metadata.hehestl`: `Compression: zstd:12`, `zstd:19:w27` и т.д.
 
 Если сжатый blob не меньше оригинала — entry пишется как **store** (без потери данных).

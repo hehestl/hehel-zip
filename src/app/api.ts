@@ -158,11 +158,13 @@ export const api = {
     outputPath: string,
     filePaths: string[],
     compressionPreset?: CompressionPreset,
+    convertImagesToWebp?: boolean,
   ) =>
     invoke<CreateHeheResult>("create_archive", {
       outputPath,
       filePaths,
       compressionPreset: compressionPreset ?? null,
+      convertImagesToWebp: convertImagesToWebp ?? null,
     }),
 
   createHeheFromArchive: (
@@ -171,6 +173,7 @@ export const api = {
     stripPrefix: string | null,
     outputPath: string,
     compressionPreset?: CompressionPreset,
+    convertImagesToWebp?: boolean,
   ) =>
     invoke<CreateHeheResult>("create_hehe_from_archive", {
       archivePath,
@@ -178,6 +181,7 @@ export const api = {
       stripPrefix,
       outputPath,
       compressionPreset: compressionPreset ?? null,
+      convertImagesToWebp: convertImagesToWebp ?? null,
     }),
 
   readHehestlFromArchive: (archivePath: string) =>
